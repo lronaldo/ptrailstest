@@ -42,14 +42,19 @@ class Table
         # BET LABELS
         px = [ 32, 35, 32, 17, 14, 17 ]
         py = [  6, 11, 15, 15, 11,  6 ]
+        al = [ :c, :r, :c, :c, :l, :c ]
         @labels[:bets] = []
         (1..6).each do |i|
-            l = Label.new "Bet Player #{i}", 9
+            l = Label.new "BP #{i}", 9
             l.x = px[i-1]
             l.y = py[i-1]
             l.attr     = A_NORMAL
             l.fg_color = COLOR_MAGENTA
             l.bg_color = COLOR_GREEN
+            case al[i-1]
+                when :r then l.align = :right
+                when :l then l.align = :left
+            end
             @labels[:bets].push l
         end
     end

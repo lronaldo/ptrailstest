@@ -1,82 +1,38 @@
 require './Renderer'
-require './Player'
-require './Deck'
 
-class Table
-    SCR = Renderer.instance
-    MAX_SEATS = 10
-    attr_accessor :seats
-    attr_accessor :bets, :deck
-    attr_accessor :button
-    attr_accessor :bb, :ante, :pot
-    attr_accessor :x, :y
+class Label
+    ALIGNMENTS = [ :center, :left, :right ]
+    attr_accessor :x, :y, :wide
+    attr_accessor :attr, :fg_color, :bg_color
+    attr_accessor :align, :text
 
-    def initialize(seats = 6)
-        reset(seats)
+    def initialize(text = "", wide = 5)
+        @x        = 0
+        @y        = 0
+        @wide     = wide
+        @text     = text
+        @attr     = A_NORMAL
+        @fg_color = COLOR_WHITE
+        @bg_color = COLOR_BLACK
+        @align    = :center
     end
 
-    ## Reset table
-    def reset(seats)
-        seats = MAX_SEATS if seats > MAX_SEATS
-        @seats  = {}
-        @bets   = {}
-        (0...seats).each do |i|
-            @seats[i] = nil
-            @bets[i]  = nil
-        end
-        @deck   = Deck.new
-        @button = 0
-        @pot    = 0
-        @bb     = 20
-        @ante   = 0
-        @x, @y  = 0, 0
-    end
-
-    ## Available seats
-    def availableseats
-        @seats.select { |k, v| v == nil }
-    end
-
-    ## Seat a player in a seat if empty
-    def seatplayer(p, seat)
-        @seats[seat] = p if @seats.key?(seat)
-    end
-
-    ## Seat a player in an empty seat
-    def seatplayer_emptyseat(p)
-        as = self.availableseats
-        as[as.first[0]] = p if as.size > 0 
-    end
-
-    ## Create players
-    def createplayers(n=1, bbrange = (18..25))
-        as = self.availableseats.size
-        n = as if n > as
-        n.times do
-            p = Player.new 
-            p.stack = @bb * bbrange.to_a.sample
-            seatplayer_emptyseat(p)
-        end
-    end
-
-    ## Render table
-    def render
-        ## TODO: Consider diferent kinds of tables
-
-        # Render table background
-        y = @y + 3
-        SCR.changeColor A_NORMAL, COLOR_GREEN, COLOR_GREEN
-        (0..1).each do |i|
-            (0..8).each do |j|
-                j = 8-j if i == 0
-                SCR.setxy @x + 10 + j, y
-                SCR.repchar '*', 38 - 2 * j
-                y += 1
-            end
-        end
-        SCR.setDefaultColor
-
-        # Render Pot
+    ## Render Label
+    def render(xoff = 0, yoff = 0)
+        x = @x + xoff
+        y = @y + yoff
         
+        # Cut exceeding chars and align
+        t = @text
+        t = t[0...@wide] if t.length > @wide
+        case @align
+            when :left   then t = t.ljust @wide
+            when :right  then t = t.rjust @wide
+            else              t = t.center @wide
+        end
+        SCR.setxy x, y
+        SCR.changeColor @attr, @fg_color, @bg_color
+        SCR << t
+        SCR.setDefaultColor
     end
 end

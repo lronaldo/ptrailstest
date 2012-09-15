@@ -1,6 +1,7 @@
 require './Renderer'
 require './CardRange'
 require './Table'
+require './Label'
 include Curses
 
 ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
@@ -11,7 +12,7 @@ ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
 
 SCR = Renderer.instance
 SCR.withcurses do
-    SCR.setDefaultColor
+#    SCR.setDefaultColor
     SCR.setxy 0,0
     t = Table.new
     t.render

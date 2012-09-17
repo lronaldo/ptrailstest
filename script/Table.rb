@@ -1,19 +1,18 @@
-require './CursesRenderer'
-require './Player'
-require './Deck'
+require_relative 'Widget'
+require_relative 'Player'
+require_relative 'Deck'
 
-class Table
-    include Curses
-    SCR = CursesRenderer.instance
+class Table < Widget
     MAX_SEATS = 10
     attr_accessor :seats
     attr_accessor :bets, :deck
     attr_accessor :button
     attr_accessor :bb, :ante, :pot
-    attr_accessor :x, :y
     attr_accessor :labels
 
-    def initialize(seats = 6)
+    def initialize(window, seats = 6)
+        super window
+        @img_table = Gosu::Image.new @window, "img/table.png", true
         self.createlabels
         self.reset(seats)
     end
@@ -35,8 +34,8 @@ class Table
             l = Label.new "info", 10
             l.x = 24
             l.y = 10 + i
-            l.fg_color = COLOR_BLACK
-            l.bg_color = COLOR_WHITE
+            #l.fg_color = COLOR_BLACK
+            #l.bg_color = COLOR_WHITE
             @labels[:potinfo].push l
         end
 
@@ -49,9 +48,9 @@ class Table
             l = Label.new "BP #{i}", 9
             l.x = px[i-1]
             l.y = py[i-1]
-            l.attr     = A_NORMAL
-            l.fg_color = COLOR_MAGENTA
-            l.bg_color = COLOR_GREEN
+            #l.attr     = A_NORMAL
+            #l.fg_color = COLOR_MAGENTA
+            #l.bg_color = COLOR_GREEN
             case al[i-1]
                 when :r then l.align = :right
                 when :l then l.align = :left
@@ -102,6 +101,10 @@ class Table
             p.stack = @bb * bbrange.to_a.sample
             seatplayer_emptyseat(p)
         end
+    end
+
+    def drawmyself
+        @img_table.draw 0,0,0
     end
 
     ## Render table

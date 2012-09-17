@@ -11,9 +11,10 @@ ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
 
 class GameWindow < GosuRendererWindow
     def initialize
-        super 640, 480, false
+        super 792, 546, false
         self.caption = "Trainer"
-        @bg_image = Gosu::Image.new self, "img/table.jpg", true
+        @bg_image = Gosu::Image.new self, "img/bg.jpg", true
+        @table    = Table.new self
     end
 
     def update
@@ -21,6 +22,7 @@ class GameWindow < GosuRendererWindow
 
     def draw
         @bg_image.draw 0,0,0
+        @table.draw 
     end
 end
 

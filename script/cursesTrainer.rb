@@ -1,8 +1,7 @@
-require './Renderer'
+require './GosuRenderer'
 require './CardRange'
 require './Table'
 require './Label'
-include Curses
 
 ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
          mp:     CardRange.new("22+ A9o+ A7s+ KTo+ K9s+ QTo+ Q9s+ JTo  J9s+ T9s  98s  87s"),
@@ -10,15 +9,37 @@ ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
          co_fav: CardRange.new("22+ A2+  K8o+ K5s+ Q9o+ Q8s+ J9o+ J8s+ T9o  T8s+ 97s+ 86s+ 76s 65s 54s")
        }   
 
-SCR = Renderer.instance
+class GameWindow < GosuRendererWindow
+    def initialize
+        super 640, 480, false
+        self.caption = "Trainer"
+        @bg_image = Gosu::Image.new self, "img/table.jpg", true
+    end
+
+    def update
+    end
+
+    def draw
+        @bg_image.draw 0,0,0
+    end
+end
+
+w = GameWindow.new 
+w.show
+
+=begin
+SCR = CursesRenderer.instance
 SCR.withcurses do
 #    SCR.setDefaultColor
     SCR.setxy 0,0
     t = Table.new
     t.render
-    while !getch
+    while !SCR.getchar
     end
+
 =begin
+
+
     points = 0
     c1, c2 = Card.new, Card.new
     KEYS = [ "r", "f", " " ]
@@ -48,5 +69,5 @@ SCR.withcurses do
         end
         SCR.nl
     end
-=end
 end
+=end

@@ -1,9 +1,10 @@
-require './Renderer'
+require './CursesRenderer'
 require './Player'
 require './Deck'
 
 class Table
-    SCR = Renderer.instance
+    include Curses
+    SCR = CursesRenderer.instance
     MAX_SEATS = 10
     attr_accessor :seats
     attr_accessor :bets, :deck

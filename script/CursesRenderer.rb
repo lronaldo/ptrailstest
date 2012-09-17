@@ -79,4 +79,9 @@ class CursesRenderer
         n.times { addch char }
         refresh
     end
+
+    ## Get a character from keyboard
+    def getchar
+        getch
+    end
 end

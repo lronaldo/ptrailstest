@@ -1,6 +1,9 @@
-require './Renderer'
+require './CursesRenderer'
 
 class Label
+    include Curses
+    SCR = CursesRenderer.instance
+
     ALIGNMENTS = [ :center, :left, :right ]
     attr_accessor :x, :y, :wide
     attr_accessor :attr, :fg_color, :bg_color

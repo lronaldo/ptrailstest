@@ -1,26 +1,40 @@
-require './CursesRenderer'
+require_relative 'Widget'
 
-class Label
-    include Curses
-    SCR = CursesRenderer.instance
-
+class Label < Widget
     ALIGNMENTS = [ :center, :left, :right ]
-    attr_accessor :x, :y, :wide
-    attr_accessor :attr, :fg_color, :bg_color
-    attr_accessor :align, :text
+    attr_accessor :font, :align, :text
+    attr_accessor :color, :mode, :factorx, :factory
 
-    def initialize(text = "", wide = 5)
+    def initialize(window, text = "", owner = nil)
+        super window, owner
         @x        = 0
         @y        = 0
-        @wide     = wide
         @text     = text
-        @attr     = A_NORMAL
-        @fg_color = COLOR_WHITE
-        @bg_color = COLOR_BLACK
         @align    = :center
+        @font     = Gosu::Font.new(window, Gosu::default_font_name, 20)
+        @color    = 0xFFFFFFFF
+        @mode     = :default
+        @factorx  = 1
+        @factory  = 2
+    end
+
+    ## Render the label
+    def drawmyself
+        x = @x
+        y = @y
+        if @align != :left
+            w = @font.text_width @text, @factorx
+            if @align == :center
+                x = x - w / 2
+            elsif @align == :right
+                x = x - w
+            end
+        end
+        @font.draw @text, x, y, 0, 1, 1, @color, @mode
     end
 
     ## Render Label
+=begin
     def render(xoff = 0, yoff = 0)
         x = @x + xoff
         y = @y + yoff
@@ -38,4 +52,5 @@ class Label
         SCR << t
         SCR.setDefaultColor
     end
+=end
 end

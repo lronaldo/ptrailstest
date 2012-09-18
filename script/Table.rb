@@ -10,9 +10,11 @@ class Table < Widget
     attr_accessor :bb, :ante, :pot
     attr_accessor :labels
 
-    def initialize(window, seats = 6)
-        super window
-        @img_table = Gosu::Image.new @window, "img/table.png", true
+    def initialize(window, owner = nil, seats = 6)
+        super window, owner
+        @img_table     = Gosu::Image.new @window, "img/table.png", true
+        @img_emptyseat = Gosu::Image.new @window, "img/emptyseat.png", true 
+        @img_seat      = Gosu::Image.new @window, "img/seat.png", true 
         self.createlabels
         self.reset(seats)
     end
@@ -23,47 +25,46 @@ class Table < Widget
         @labels = {}
         
         # POT LABEL
-        l = Label.new "POT", 6
-        l.x = 26
-        l.y = 9
+        l   = Label.new self.window, "POT"
+        l.x = 395
+        l.y = 200
         @labels[:pot] = l
+        addChild l
 
         # POT INFO
-        @labels[:potinfo] = []
-        (0...3).each do |i|
-            l = Label.new "info", 10
-            l.x = 24
-            l.y = 10 + i
-            #l.fg_color = COLOR_BLACK
-            #l.bg_color = COLOR_WHITE
-            @labels[:potinfo].push l
-        end
+        l = Label.new self.window, "pot info"
+        l.x = 395
+        l.y = 220
+        @labels[:potinfo] = l
+        addChild l
 
         # BET LABELS
-        px = [ 32, 35, 32, 17, 14, 17 ]
-        py = [  6, 11, 15, 15, 11,  6 ]
-        al = [ :c, :r, :c, :c, :l, :c ]
+        px = [ 510, 625, 510, 280, 175, 280 ]
+        py = [ 140, 220, 310, 310, 220, 140 ]
+        al = [  :c,  :r,  :c,  :c,  :l,  :c ]
         @labels[:bets] = []
         (1..6).each do |i|
-            l = Label.new "BP #{i}", 9
+            l = Label.new self.window, "BP #{i}"
             l.x = px[i-1]
             l.y = py[i-1]
-            #l.attr     = A_NORMAL
-            #l.fg_color = COLOR_MAGENTA
-            #l.bg_color = COLOR_GREEN
+            l.color = 0xFFFF0000
             case al[i-1]
                 when :r then l.align = :right
                 when :l then l.align = :left
             end
             @labels[:bets].push l
+            addChild l
         end
     end
 
     ## Reset table
     def reset(seats = 6)
         seats = MAX_SEATS if seats > MAX_SEATS
-        @seats  = {}
-        @bets   = {}
+        ## TODO: SEATS PX & PY for 2, 4, 6, 8, 9 and 10 player tables
+        @seats_px = [ 465, 630, 465, 235,  75, 235 ]
+        @seats_py = [  50, 185, 330, 330, 185,  50 ]
+        @seats    = {}
+        @bets     = {}
         (0...seats).each do |i|
             @seats[i] = nil
             @bets[i]  = nil
@@ -103,37 +104,19 @@ class Table < Widget
         end
     end
 
+    ## Create players
     def drawmyself
+        # Background and table
         @img_table.draw 0,0,0
-    end
 
-    ## Render table
-    def render(xoff = 0, yoff = 0)
-        ## TODO: Consider diferent kinds of tables
-
-        # Render table background
-        x = @x + xoff
-        y = @y + yoff + 3
-        SCR.changeColor A_NORMAL, COLOR_BLACK, COLOR_GREEN
-        (0..1).each do |i|
-            (0..7).each do |j|
-                j = 8-j if i == 0
-                SCR.setxy x + 10 + j, y
-                SCR.repchar '*', 38 - 2 * j
-                y += 1
-            end
-        end
-        SCR.setDefaultColor
-
-        # Render labels
-        @labels.each do |key, l|
-            if l.is_a?(Array)
-                l.each do |ll|
-                    ll.render @x, @y
-                end
+        # Seats
+        @seats.each do |i, s|
+            if s
+                img = @img_seat
             else
-                l.render @x, @y
+                img = @img_emptyseat
             end
+            img.draw @seats_px[i], @seats_py[i], 0
         end
     end
 end

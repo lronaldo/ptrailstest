@@ -1,7 +1,7 @@
-require './GosuRenderer'
-require './CardRange'
-require './Table'
-require './Label'
+require 'gosu'
+require_relative 'CardRange'
+require_relative 'Table'
+require_relative 'Label'
 
 ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
          mp:     CardRange.new("22+ A9o+ A7s+ KTo+ K9s+ QTo+ Q9s+ JTo  J9s+ T9s  98s  87s"),
@@ -9,7 +9,7 @@ ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
          co_fav: CardRange.new("22+ A2+  K8o+ K5s+ Q9o+ Q8s+ J9o+ J8s+ T9o  T8s+ 97s+ 86s+ 76s 65s 54s")
        }   
 
-class GameWindow < GosuRendererWindow
+class GameWindow < Gosu::Window
     def initialize
         super 792, 546, false
         self.caption = "Trainer"

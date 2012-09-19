@@ -5,10 +5,13 @@ class TableSeat < Widget
     ## Types of seats with respect to table position
     SEAT_TYPES = [ :d, :u, :l, :r, :ul, :ur, :dl, :dr ]
     ## Relative BET LABEL positions with respect to seat and alignments
-    BL = { :r  => [ -20,  35, :r ], :l  => [ 110,  35, :l ], :d  => [ 45, -30, :c ], 
-           :u  => [  45, 100, :c ], :ur => [   5,  90, :r ], :ul => [ 95,  90, :l ], 
-           :dl => [  95, -20, :l ], :dr => [   5, -20, :r ] }
+    BL = { :r  => [ -30,  35, :r ], :l  => [ 120,  35, :l ], :d  => [  45, -45, :c ], 
+           :u  => [  45, 125, :c ], :ur => [   5, 100, :r ], :ul => [ 105, 100, :l ], 
+           :dl => [ 105, -25, :l ], :dr => [  -5, -25, :r ] }
     ## Relative minicards positions with respect to seat and alignments
+    MC = { :r  => [ -20,  30 ], :l  => [  85,  30 ], :d  => [ 35, -25 ], 
+           :u  => [  35,  80 ], :ur => [  10,  75 ], :ul => [ 75,  70 ], 
+           :dl => [  75, -10 ], :dr => [   0, -15 ] }
 
     ## CLASS ATTRIBUTES
     attr_accessor :seattype, :player, :bet
@@ -58,7 +61,11 @@ class TableSeat < Widget
 
     ## Draw minicards if the player has non-folded cards
     def drawminicards
-        
+        if true #s.player && s.player.status == :playing
+            d = MC[@seattype]
+            @@imgs[:minicard].draw @x + d[0], @y + d[1], 0
+            @@imgs[:minicard].draw @x + d[0] + 5, @y + d[1] + 5, 0
+        end
     end
 
     ## Create players
@@ -70,6 +77,9 @@ class TableSeat < Widget
             img = :emptyseat
         end
         @@imgs[img].draw @x, @y, 0
+
+        ## Draw minicards
+        drawminicards
     end
 
     ## Seat available if no player is seated

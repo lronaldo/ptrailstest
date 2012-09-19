@@ -5,8 +5,6 @@ class Widget
     attr_accessor   :window, :owner
     attr_reader     :childs
 
-    protected       :owner=, :window=
-
     def initialize(window, owner = nil)
         @x, @y  = 0, 0
         @width  = 100
@@ -22,24 +20,25 @@ class Widget
         @childs.push widget
     end
 
-    def posx
-        if @owner
-            @x + @owner.x
-        else
-            @x
-        end
-    end
-    
-    def posy
-        if @owner
-            @y + @owner.y
-        else
-            @y
-        end
+    def x=(nx)
+        dist = nx - @x
+        adddist "@x", dist
     end
 
+    def y=(ny)
+        dist = ny - @y
+        adddist "@y", dist
+    end
+
+    def adddist(variable, dist)
+        instance_variable_set variable, eval(variable) + dist
+        @childs.each { |i| i.adddist variable, dist }
+    end
+    
     def draw
         self.drawmyself
         @childs.each { |c| c.draw }
     end
+
+    protected :owner=, :window=, :adddist
 end

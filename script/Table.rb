@@ -1,4 +1,5 @@
 require_relative 'Widget'
+require_relative 'TableSeat'
 require_relative 'Player'
 require_relative 'Deck'
 
@@ -9,14 +10,20 @@ class Table < Widget
     attr_accessor :button
     attr_accessor :bb, :ante, :pot
     attr_accessor :labels
+    @@imgs = nil
 
     def initialize(window, owner = nil, seats = 6)
         super window, owner
-        @img_table     = Gosu::Image.new @window, "img/table.png", true
-        @img_emptyseat = Gosu::Image.new @window, "img/emptyseat.png", true 
-        @img_seat      = Gosu::Image.new @window, "img/seat.png", true 
+        self.loadimages
         self.createlabels
         self.reset(seats)
+    end
+
+    def loadimages
+        if !@@imgs
+            @@imgs = {}
+            @@imgs[:table] = Gosu::Image.new @window, "img/table.png", true
+        end
     end
 
     # Generate labels
@@ -27,64 +34,46 @@ class Table < Widget
         # POT LABEL
         l   = Label.new self.window, "POT"
         l.x = 395
-        l.y = 200
+        l.y = 140
         @labels[:pot] = l
         addChild l
 
         # POT INFO
         l = Label.new self.window, "pot info"
         l.x = 395
-        l.y = 220
+        l.y = 160
         @labels[:potinfo] = l
         addChild l
-
-        # BET LABELS
-        px = [ 510, 625, 510, 280, 175, 280 ]
-        py = [ 140, 220, 310, 310, 220, 140 ]
-        al = [  :c,  :r,  :c,  :c,  :l,  :c ]
-        @labels[:bets] = []
-        (1..6).each do |i|
-            l = Label.new self.window, "BP #{i}"
-            l.x = px[i-1]
-            l.y = py[i-1]
-            l.color = 0xFFFF0000
-            case al[i-1]
-                when :r then l.align = :right
-                when :l then l.align = :left
-            end
-            @labels[:bets].push l
-            addChild l
-        end
     end
 
     ## Reset table
-    def reset(seats = 6)
-        seats = MAX_SEATS if seats > MAX_SEATS
+    def reset(nseats = 6)
+        nseats = MAX_SEATS if nseats > MAX_SEATS
+        @x, @y  = 0, 0
         ## TODO: SEATS PX & PY for 2, 4, 6, 8, 9 and 10 player tables
-        @seats_px = [ 465, 630, 465, 235,  75, 235 ]
-        @seats_py = [  50, 185, 330, 330, 185,  50 ]
-        @seats    = {}
-        @bets     = {}
-        (0...seats).each do |i|
-            @seats[i] = nil
-            @bets[i]  = nil
+        sx = [ 465, 645, 465, 235,  60, 235 ]
+        sy = [  35, 185, 345, 345, 185,  35 ]
+        st = [  :u,  :r,  :d,  :d,  :l,  :u ]
+        @seats = {}
+        (0...nseats).each do |i|
+            @seats[i] = TableSeat.new @window, st[i], sx[i], sy[i] 
+            self.addChild @seats[i]
         end
         @deck   = Deck.new
         @button = 0
         @pot    = 0
         @bb     = 20
         @ante   = 0
-        @x, @y  = 0, 0
     end
 
     ## Available seats
     def availableseats
-        @seats.select { |k, v| v == nil }
+        @seats.select { |k, v| v.available? }
     end
 
     ## Seat a player in a seat if empty
     def seatplayer(p, seat)
-        @seats[seat] = p if @seats.key?(seat)
+        @seats[seat].player = p if @seats.key?(seat)
     end
 
     ## Seat a player in an empty seat
@@ -107,16 +96,6 @@ class Table < Widget
     ## Create players
     def drawmyself
         # Background and table
-        @img_table.draw 0,0,0
-
-        # Seats
-        @seats.each do |i, s|
-            if s
-                img = @img_seat
-            else
-                img = @img_emptyseat
-            end
-            img.draw @seats_px[i], @seats_py[i], 0
-        end
+        @@imgs[:table].draw 0,0,0
     end
 end

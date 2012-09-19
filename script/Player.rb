@@ -1,9 +1,10 @@
 require './Card'
 
 class Player
+    STATUS = [ :waiting, :away, :playing, :folded ]
     attr_accessor :nick
     attr_accessor :stack
-    attr_accessor :away
+    attr_accessor :status
     attr_accessor :showcards
     attr_reader   :cards
 
@@ -15,7 +16,7 @@ class Player
         @nick       = "Player"
         @cards      = []
         @stack      = 0
-        @away       = false
+        @status     = :waiting
         @showcards  = false
     end
 

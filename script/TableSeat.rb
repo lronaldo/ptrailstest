@@ -5,13 +5,10 @@ class TableSeat < Widget
     ## Types of seats with respect to table position
     SEAT_TYPES = [ :d, :u, :l, :r, :ul, :ur, :dl, :dr ]
     ## Relative BET LABEL positions with respect to seat and alignments
-    DX = { :r  => -20, :l  => 110, :d  =>  45, :u  =>  45, 
-           :ur =>   5, :ul =>  95, :dl =>  95, :dr =>   5 }
-    DY = { :r  =>  35, :l  =>  35, :d  => -30, :u  => 100, 
-           :ur =>  90, :ul =>  90, :dl => -20, :dr => -20 }
-    DA = { :r  => :right, :l  => :left,  :d  => :center, 
-           :u  => :center,:ur => :right, :ul => :left, 
-           :dl => :left,  :dr => :right }
+    BL = { :r  => [ -20,  35, :r ], :l  => [ 110,  35, :l ], :d  => [ 45, -30, :c ], 
+           :u  => [  45, 100, :c ], :ur => [   5,  90, :r ], :ul => [ 95,  90, :l ], 
+           :dl => [  95, -20, :l ], :dr => [   5, -20, :r ] }
+    ## Relative minicards positions with respect to seat and alignments
 
     ## CLASS ATTRIBUTES
     attr_accessor :seattype, :player, :bet
@@ -46,13 +43,14 @@ class TableSeat < Widget
     def createlabels
         @labels = {}
 
-        ## BET LABEL
-
         ## Create BET LABEL
         l = Label.new self.window, "BET"
-        l.x = @x + DX[@seattype]
-        l.y = @y + DY[@seattype]
-        l.align =  DA[@seattype]
+        l.x = @x + BL[@seattype][0]
+        l.y = @y + BL[@seattype][1]
+        case BL[@seattype][2]
+            when :r then l.align = :right
+            when :l then l.align = :left
+        end
         l.color = 0xFFFF0000
         @labels[:bet] = l
         addChild l

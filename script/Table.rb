@@ -22,7 +22,7 @@ class Table < Widget
     def loadimages
         if !@@imgs
             @@imgs = {}
-            @@imgs[:table] = Gosu::Image.new @window, "img/table.png", true
+            @@imgs[:table]  = Gosu::Image.new @window, "img/table.png", true
         end
     end
 

@@ -71,19 +71,9 @@ class Card < Widget
             @@cardsuit[s].draw @x, @y + 30 * sy, 0, sx, sy
             @cardvalue.text = self.value
 
-            ## Mayor number
-            @cardvalue.x = @x + 47 * sx
-            @cardvalue.y = @y + 30 * sy
-            @cardvalue.scale_x = sx
-            @cardvalue.scale_y = 1.25 * sy
-            @cardvalue.draw
-
-            ## Minor number
-            @cardvalue.x = @x + 15 * sx
-            @cardvalue.y = @y + 5 * sy
-            @cardvalue.scale_x = 0.5 * sx
-            @cardvalue.scale_y = 0.55 * sy
-            @cardvalue.draw
+            ## Mayor and minor number 
+            @cardvalue.drawxy @x + 47*sx, @y + 30*sy,     sx, 1.25*sy
+            @cardvalue.drawxy @x + 15*sx, @y +  5*sy, 0.5*sx, 0.55*sy
         end
     end
 

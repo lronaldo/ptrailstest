@@ -39,6 +39,14 @@ class Widget
         @childs.each { |i| i.adddist variable, dist }
     end
     
+    def drawxy(_x=nil, _y=nil, _sx=nil, _sy=nil)
+        self.x = _x         if _x
+        self.y = _y         if _y
+        self.scale_x = _sx  if _sx
+        self.scale_y = _sy  if _sy
+        self.draw
+    end
+
     def draw
         if @visible
             self.drawmyself

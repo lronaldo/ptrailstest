@@ -57,6 +57,12 @@ class Table < Widget
         @seats = {}
         (0...nseats).each do |i|
             @seats[i] = TableSeat.new @window, st[i], sx[i], sy[i] 
+            p = Player.new 
+            c = Card.new @window
+            p.showcards = true
+            p.dealcards [ c.random, c.random ]
+            p.status = :playing
+            @seats[i].player = p
             self.addChild @seats[i]
         end
 =begin

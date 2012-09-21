@@ -76,11 +76,21 @@ class TableSeat < Widget
         end
         @@imgs[img].draw @x, @y, 0
 
-        ## Draw minicards
-        if true #s.player && s.player.status == :playing
-            d = MC[@seattype]
-            @@imgs[:minicard].draw @x + d[0], @y + d[1], 0
-            @@imgs[:minicard].draw @x + d[0] + 5, @y + d[1] + 5, 0
+        ## Draw cards or minicards
+        if @player && @player.status == :playing
+            if @player.showcards
+                cx = @x + 10
+                cy = @y + 5
+                @player.cards.each do |c|
+                    c.drawxy cx, cy, 0.6, 0.6
+                    cx += 17
+                    cy += 5
+                end
+            else
+                d = MC[@seattype]
+                @@imgs[:minicard].draw @x + d[0], @y + d[1], 0
+                @@imgs[:minicard].draw @x + d[0] + 5, @y + d[1] + 5, 0
+            end
         end
 
         ## Draw dealer button

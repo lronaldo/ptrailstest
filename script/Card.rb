@@ -78,7 +78,7 @@ class Card < Widget
     end
 
     def next
-        Card.new(ALL_CARDS[ @value + 1 ]) if self.valid
+        Card.new @window, ALL_CARDS[ @value + 1 ] if self.valid
     end
 
     def next!
@@ -87,7 +87,7 @@ class Card < Widget
     end
 
     def random
-        Card.new(ALL_CARDS[rand(0...ALL_CARDS.length)])
+        Card.new @window, ALL_CARDS[rand(0...ALL_CARDS.length)]
     end
 
     def random!

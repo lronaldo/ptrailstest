@@ -1,4 +1,4 @@
-require './Card'
+require_relative 'Card'
 
 class Player
     STATUS = [ :waiting, :away, :playing, :folded ]
@@ -23,8 +23,16 @@ class Player
     # Deal a card to the player
     # c should be a card
     def deal(c)
-        if c.respond_to?(valid) and c.valid
+        if c.respond_to?(:valid) and c.valid
             @cards << c
         end
     end
+
+    def dealcards(vec)
+        vec.each { |c| self.deal(c) }
+    end
+
+    def status=(st)
+       @status = st if STATUS.include?(st) 
+    end 
 end

@@ -28,8 +28,9 @@ class Player
         end
     end
 
-    def dealcards(vec)
+    def dealHand(vec)
         vec.each { |c| self.deal(c) }
+        @status = :playing
     end
 
     def status=(st)

@@ -57,12 +57,6 @@ class Table < Widget
         @seats = {}
         (0...nseats).each do |i|
             @seats[i] = TableSeat.new @window, st[i], sx[i], sy[i] 
-            p = Player.new 
-            c = Card.new @window
-            p.showcards = true
-            p.dealcards [ c.random, c.random ]
-            p.status = :playing
-            @seats[i].player = p
             self.addChild @seats[i]
         end
 =begin
@@ -95,7 +89,7 @@ class Table < Widget
     ## Seat a player in an empty seat
     def seatplayer_emptyseat(p)
         as = self.availableseats
-        as[as.first[0]] = p if as.size > 0 
+        @seats[as.first[0]].player = p if as.size > 0 
     end
 
     ## Create players
@@ -106,6 +100,18 @@ class Table < Widget
             p = Player.new 
             p.stack = @bb * bbrange.to_a.sample
             seatplayer_emptyseat(p)
+        end
+    end
+
+    ## Shuffle up and deal
+    def dealNewHand
+        @deck.reset
+        @deck.shuffle!
+        @seats.each do |i, s|
+            if s.player && s.player.status != :away
+                @seats[i].player.reset
+                @seats[i].player.dealHand @deck.deal(2)
+            end
         end
     end
 

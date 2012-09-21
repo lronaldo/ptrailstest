@@ -15,9 +15,12 @@ class GameWindow < Gosu::Window
         self.caption = "Trainer"
         @bg_image = Gosu::Image.new self, "img/bg.jpg", true
         @table    = Table.new self
+        @table.createplayers 4
+        @table.dealNewHand
     end
 
     def update
+        sleep 0.02
     end
 
     def draw

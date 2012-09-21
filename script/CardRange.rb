@@ -1,5 +1,6 @@
-require './Card'
 require 'matrix'
+require_relative 'Card'
+require_relative 'Widget'
 
 # Redefining class Matrix to add element-modification capabilities
 class Matrix
@@ -8,14 +9,15 @@ class Matrix
   end
 end
 
-class CardRange
+class CardRange < Widget
     CARDS = %w{ 2 3 4 5 6 7 8 9 T J Q K A }
     SUITS = %w{ h c s d }
     FULL_SUIT_CELL    = %w{ hh cc ss dd }
     FULL_OFFSUIT_CELL = %w{ hc ch hs sh hd dh cs sc cd dc sd ds }
     attr_reader :cardpairs
 
-    def initialize(strranges = "")
+    def initialize(window, strranges = "", owner = nil)
+        super window, owner
         self.reset
         self.select_ranges(strranges)
     end
@@ -130,8 +132,8 @@ class CardRange
                         end
                         self.select_hands_upper_range i, j, s
                     else
-                        c1 = Card.new text[0..1]
-                        c2 = Card.new text[2..3]
+                        c1 = Card.new @window, text[0..1]
+                        c2 = Card.new @window, text[2..3]
                         if c1.valid && c2.valid
                             self.select_concrete_hand c1, c2
                         end

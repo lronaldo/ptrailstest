@@ -1,10 +1,22 @@
-class Card
+require_relative 'Widget'
+
+class Card < Widget
+    @@cardbase = nil
     CARDS = %w{ 2 3 4 5 6 7 8 9 T J Q K A }
     SUITS = %w{ h d s c }
     ALL_CARDS = ["Ah", "As", "Ac", "Ad", "Kh", "Ks", "Kc", "Kd", "Qh", "Qs", "Qc", "Qd", "Jh", "Js", "Jc", "Jd", "Th", "Ts", "Tc", "Td", "9h", "9s", "9c", "9d", "8h", "8s", "8c", "8d", "7h", "7s", "7c", "7d", "6h", "6s", "6c", "6d", "5h", "5s", "5c", "5d", "4h", "4s", "4c", "4d", "3h", "3s", "3c", "3d", "2h", "2s", "2c", "2d"]
 
-    def initialize(val = "Ah")
+    def initialize(window, val = "Ah", owner = nil)
+        super window, owner
         self.strvalue = val
+        loadimages
+    end
+
+    def loadimages
+        if !@@cardbase
+            @@cardbase = []
+            @@cardbase = Gosu::Image.new @window, "img/cardbase.png", true
+        end
     end
 
     def valid

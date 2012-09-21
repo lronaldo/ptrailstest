@@ -1,16 +1,18 @@
-require './Card'
+require_relative 'Card'
+require_relative 'Widget'
 
-class Deck
+class Deck < Widget
     attr_reader :cards
 
-    def initialize
+    def initialize(window, owner = nil)
+        super window, owner
         self.reset
     end
     
     # Create a vector with all the cards
     def reset
         @cards = []
-        c = Card.new
+        c = Card.new @window
         while c.value
             @cards << c.clone
             c.next!

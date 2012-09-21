@@ -51,7 +51,6 @@ class Table < Widget
         nseats = MAX_SEATS if nseats > MAX_SEATS
         @x, @y  = 0, 0
         ## TODO: SEATS PX & PY for 2, 4, 6, 8, 9 and 10 player tables
-=begin
         sx = [ 465, 645, 465, 235,  60, 235 ]
         sy = [  35, 185, 345, 345, 185,  35 ]
         st = [  :u,  :r,  :d,  :d,  :l,  :u ]
@@ -60,7 +59,7 @@ class Table < Widget
             @seats[i] = TableSeat.new @window, st[i], sx[i], sy[i] 
             self.addChild @seats[i]
         end
-=end
+=begin
         sx = [ 465, 590, 645, 590, 465, 235, 110,  60, 110, 235 ]
         sy = [  35,  70, 185, 300, 345, 345, 300, 185,  70,  35 ]
         st = [  :u, :ur,  :r, :dr,  :d,  :d, :dl,  :l, :ul,  :u ]
@@ -69,7 +68,8 @@ class Table < Widget
             @seats[i] = TableSeat.new @window, st[i], sx[i], sy[i] 
             self.addChild @seats[i]
         end
-        @deck   = Deck.new
+=end
+        @deck   = Deck.new @window
         @button = 0
         @pot    = 0
         @bb     = 20

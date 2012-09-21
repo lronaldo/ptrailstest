@@ -1,4 +1,5 @@
 require_relative 'Widget'
+require_relative 'Label'
 
 class Card < Widget
     @@cardbase = nil
@@ -10,14 +11,15 @@ class Card < Widget
         super window, owner
         self.strvalue = val
         loadimages
+        @cardvalue = Label.new @window, self.value, 80
     end
 
     def loadimages
         if !@@cardbase
             c = Gosu::Image.load_tiles @window, "img/cardbase.png", 84, 118, true
-            @@cardbase = { s: c[0], c: c[1], d: c[2], h: c[3] }
+            @@cardbase  = { s: c[0], c: c[1], d: c[2], h: c[3] }
             c = Gosu::Image.load_tiles @window, "img/cardsuit.png", 34, 40, true
-            @@cardsuit = { s: c[0], c: c[1], d: c[2], h: c[3] }
+            @@cardsuit  = { s: c[0], c: c[1], d: c[2], h: c[3] }
         end
     end
 
@@ -63,9 +65,25 @@ class Card < Widget
 
     def drawmyself
         if valid
-            s = suit.to_sym
-            @@cardbase[s].draw @x, @y, 0
-            @@cardsuit[s].draw @x + 5, @y + 20, 0
+            s      = suit.to_sym
+            sx, sy = @scale_x, @scale_y
+            @@cardbase[s].draw @x, @y, 0, sx, sy
+            @@cardsuit[s].draw @x, @y + 30 * sy, 0, sx, sy
+            @cardvalue.text = self.value
+
+            ## Mayor number
+            @cardvalue.x = @x + 47 * sx
+            @cardvalue.y = @y + 30 * sy
+            @cardvalue.scale_x = sx
+            @cardvalue.scale_y = 1.25 * sy
+            @cardvalue.draw
+
+            ## Minor number
+            @cardvalue.x = @x + 15 * sx
+            @cardvalue.y = @y + 5 * sy
+            @cardvalue.scale_x = 0.5 * sx
+            @cardvalue.scale_y = 0.55 * sy
+            @cardvalue.draw
         end
     end
 

@@ -2,6 +2,7 @@ require 'gosu'
 
 class Widget
     attr_accessor   :x, :y, :width, :height, :visible
+    attr_accessor   :scale_x, :scale_y
     attr_accessor   :window, :owner
     attr_reader     :childs
 
@@ -10,6 +11,8 @@ class Widget
         @width   = 100
         @height  = 100
         @visible = true
+        @scale_x = 1
+        @scale_y = 1
         @window  = window
         @owner   = owner
         @childs  = []

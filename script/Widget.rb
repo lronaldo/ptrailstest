@@ -1,17 +1,18 @@
 require 'gosu'
 
 class Widget
-    attr_accessor   :x, :y, :width, :height
+    attr_accessor   :x, :y, :width, :height, :visible
     attr_accessor   :window, :owner
     attr_reader     :childs
 
     def initialize(window, owner = nil)
-        @x, @y  = 0, 0
-        @width  = 100
-        @height = 100
-        @window = window
-        @owner  = owner
-        @childs = []
+        @x, @y   = 0, 0
+        @width   = 100
+        @height  = 100
+        @visible = true
+        @window  = window
+        @owner   = owner
+        @childs  = []
     end
 
     def addChild(widget)
@@ -36,8 +37,10 @@ class Widget
     end
     
     def draw
-        self.drawmyself
-        @childs.each { |c| c.draw }
+        if @visible
+            self.drawmyself
+            @childs.each { |c| c.draw }
+        end
     end
 
     protected :owner=, :window=, :adddist

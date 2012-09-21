@@ -14,8 +14,10 @@ class Card < Widget
 
     def loadimages
         if !@@cardbase
-            @@cardbase = []
-            @@cardbase = Gosu::Image.new @window, "img/cardbase.png", true
+            c = Gosu::Image.load_tiles @window, "img/cardbase.png", 84, 118, true
+            @@cardbase = { s: c[0], c: c[1], d: c[2], h: c[3] }
+            c = Gosu::Image.load_tiles @window, "img/cardsuit.png", 34, 40, true
+            @@cardsuit = { s: c[0], c: c[1], d: c[2], h: c[3] }
         end
     end
 
@@ -56,6 +58,14 @@ class Card < Widget
             ALL_CARDS[@value]
         else
             "NotACard"
+        end
+    end
+
+    def drawmyself
+        if valid
+            s = suit.to_sym
+            @@cardbase[s].draw @x, @y, 0
+            @@cardsuit[s].draw @x + 5, @y + 20, 0
         end
     end
 

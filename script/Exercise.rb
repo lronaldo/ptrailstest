@@ -59,7 +59,7 @@ class Exercise < Widget
     end
 
     def solution?(sol)
-        sol = @solution    
+        sol == @solution    
     end
 
     def drawmyself

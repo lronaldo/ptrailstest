@@ -94,7 +94,7 @@ class TableSeat < Widget
         end
 
         ## Draw dealer button
-        if true # @dealer 
+        if @dealer 
             d = DB[@seattype]
             @@imgs[:dealer].draw @x + d[0], @y + d[1], 0
         end

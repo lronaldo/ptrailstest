@@ -3,12 +3,6 @@ require_relative 'CardRange'
 require_relative 'Table'
 require_relative 'Label'
 
-ep50 = { ep:     CardRange.new("55+ ATo+ A9s+ KJo+ KTs+ QJo+ QTs+ JTs  T9s"),
-         mp:     CardRange.new("22+ A9o+ A7s+ KTo+ K9s+ QTo+ Q9s+ JTo  J9s+ T9s  98s  87s"),
-         co_des: CardRange.new("22+ A8o+ A2s+ KTo+ K8s+ QTo+ Q9s+ JTo  J9s+ T9s  98s  87s"),
-         co_fav: CardRange.new("22+ A2+  K8o+ K5s+ Q9o+ Q8s+ J9o+ J8s+ T9o  T8s+ 97s+ 86s+ 76s 65s 54s")
-       }   
-
 class GameWindow < Gosu::Window
     def initialize
         super 792, 546, false
@@ -16,7 +10,7 @@ class GameWindow < Gosu::Window
         @bg_image = Gosu::Image.new self, "img/bg.jpg", true
         @table    = Table.new self
         @table.createplayers 4
-        @table.dealNewHand
+        @table.dealNewHand 
     end
 
     def update

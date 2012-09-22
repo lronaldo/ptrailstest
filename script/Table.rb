@@ -7,7 +7,7 @@ class Table < Widget
     MAX_SEATS = 10
     attr_accessor :seats
     attr_accessor :bets, :deck
-    attr_accessor :button
+    attr_accessor :dealer
     attr_accessor :bb, :ante, :pot
     attr_accessor :labels
     @@imgs = nil
@@ -70,7 +70,7 @@ class Table < Widget
         end
 =end
         @deck   = Deck.new @window
-        @button = 0
+        @dealer = nil
         @pot    = 0
         @bb     = 20
         @ante   = 0
@@ -79,6 +79,11 @@ class Table < Widget
     ## Available seats
     def availableseats
         @seats.select { |k, v| v.available? }
+    end
+
+    ## Get seats where there is a player
+    def playerseats
+        @seats.select { |k, v| v.player }
     end
 
     ## Seat a player in a seat if empty
@@ -103,8 +108,33 @@ class Table < Widget
         end
     end
 
+    ## Pass de dealer to the next player
+    def passDealer
+        ## Give dealer if there is no one
+        if @dealer == nil
+            ps = self.playerseats 
+            if ps.size > 0
+                @dealer = ps.first[0]
+                @seats[@dealer].dealer = true
+            end
+        else
+            ps = self.playerseats
+            if ps.size > 1
+                @seats[@dealer].dealer = false
+                begin
+                    @dealer = @dealer.next
+                    @dealer = @seats.first[0] if !@seats[@dealer]
+                end while !@seats[@dealer].player
+                @seats[@dealer].dealer = true
+            end
+        end
+    end
+
     ## Shuffle up and deal
     def dealNewHand
+        self.passDealer
+
+        ## Shuffle an deal
         @deck.reset
         @deck.shuffle!
         @seats.each do |i, s|

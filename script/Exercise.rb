@@ -35,13 +35,14 @@ class Exercise < Widget
         }
     }
 
+    PLAYER = 3
     attr_accessor :table
 
     def initialize(window, owner = nil)
         super window, owner
         @table = Table.new @window
         @table.createPlayers 6
-        @table.seats[3].player.showcards = true
+        @table.seats[PLAYER].player.showcards = true
     end
 
     def generate(pos, etapa)
@@ -49,6 +50,16 @@ class Exercise < Widget
         @range = CardRange.new @window, rng
         @table.dealNewHand 
         @table.setNewDealer DEALER_POS[pos]
+        c1, c2 = @table.seats[PLAYER].player.cards
+        if @range.include? c1, c2
+            @solution = :raise
+        else
+            @solution = :fold
+        end
+    end
+
+    def solution?(sol)
+        sol = @solution    
     end
 
     def drawmyself

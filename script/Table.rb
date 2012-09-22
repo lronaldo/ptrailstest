@@ -98,7 +98,7 @@ class Table < Widget
     end
 
     ## Create players
-    def createplayers(n=1, bbrange = (18..25))
+    def createPlayers(n=1, bbrange = (18..25))
         as = self.availableseats.size
         n = as if n > as
         n.times do
@@ -130,6 +130,17 @@ class Table < Widget
         end
     end
 
+    ## Set new dealer
+    def setNewDealer(d)
+        if playerseats.size > 1 && @seats[d].player
+            if @dealer != nil
+                @seats[@dealer].dealer = false
+            end
+            @dealer = d
+            @seats[@dealer].dealer = true
+        end
+    end
+
     ## Shuffle up and deal
     def dealNewHand
         self.passDealer
@@ -139,8 +150,7 @@ class Table < Widget
         @deck.shuffle!
         @seats.each do |i, s|
             if s.player && s.player.status != :away
-                @seats[i].player.reset
-                @seats[i].player.dealHand @deck.deal(2)
+                @seats[i].player.dealNewHand @deck.deal(2)
             end
         end
     end

@@ -50,6 +50,9 @@ class Exercise < Widget
         @range = CardRange.new @window, rng
         @table.dealNewHand 
         @table.setNewDealer DEALER_POS[pos]
+        while @table.turn != PLAYER
+            @table.playerInTurnDoes :fold
+        end
         c1, c2 = @table.seats[PLAYER].player.cards
         if @range.include? c1, c2
             @solution = :raise

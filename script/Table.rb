@@ -5,10 +5,8 @@ require_relative 'Deck'
 
 class Table < Widget
     MAX_SEATS = 10
-    attr_accessor :seats
-    attr_accessor :bets, :deck
-    attr_accessor :dealer
-    attr_accessor :bb, :ante, :pot
+    attr_accessor :seats, :bets, :deck, :dealer
+    attr_accessor :turn, :bb, :ante, :pot
     attr_accessor :labels
     @@imgs = nil
 
@@ -72,6 +70,7 @@ class Table < Widget
 =end
         @deck   = Deck.new @window
         @dealer = nil
+        @turn   = nil
         @pot    = 0
         @bb     = 20
         @ante   = 0
@@ -109,6 +108,29 @@ class Table < Widget
         end
     end
 
+    ## Get seats where a player is seated, ordered by their preflop turn
+    def playerSeats_byTurnPreflop
+        if @dealer
+            ps = playerseats
+            if ps.size > 0
+                ps = ps.keys.sort
+                while ps[0] != @dealer
+                    ps << ps.shift
+                end
+                3.times { ps << ps.shift }
+            end
+            ps
+        end
+    end
+
+    ## Reset turn to BB
+    def resetTurnToUTG
+        ps = self.playerSeats_byTurnPreflop
+        if ps
+            @turn = ps[0]
+        end
+    end
+
     ## Pass de dealer to the next player
     def passDealer
         ## Give dealer if there is no one
@@ -117,23 +139,22 @@ class Table < Widget
             if ps.size > 0
                 @dealer = ps.first[0]
                 @seats[@dealer].dealer = true
+                self.resetTurnToUTG
             end
         else
-            ps = self.playerseats
+            ps = self.playerSeats_byTurnPreflop
             if ps.size > 1
                 @seats[@dealer].dealer = false
-                begin
-                    @dealer = @dealer.next
-                    @dealer = @seats.first[0] if !@seats[@dealer]
-                end while !@seats[@dealer].player
+                @dealer = ps[-1]
                 @seats[@dealer].dealer = true
             end
+            self.resetTurnToUTG
         end
     end
 
     ## Set new dealer
     def setNewDealer(d)
-        if playerseats.size > 1 && @seats[d].player
+        if @seats[d].player && playerseats.size > 1
             if @dealer != nil
                 @seats[@dealer].dealer = false
             end
@@ -141,6 +162,32 @@ class Table < Widget
             @seats[@dealer].dealer = true
             self.returnBetsToPlayers
             self.putBlindsAndAnte
+            self.resetTurnToUTG
+        end
+    end
+
+    ## Pass turn to next player in hand
+    def passTurn
+        if @turn
+            t = @turn
+            m = @seats.size 
+            begin 
+                m -= 1
+                t = t.next
+                t = @seats.first[0] if !@seats[t]
+            end while m > 0 && (!@seats[t].player || @seats[t].player.status != :playing)
+            @turn = t if m > 0
+        end
+    end
+
+    ## Player in turn realizes an action
+    def playerInTurnDoes(action)
+        ## TODO: model actions
+        if @turn
+            case action
+                when :fold then @seats[@turn].player.status = :folded
+            end
+            self.passTurn
         end
     end
 

@@ -14,25 +14,32 @@ class GameWindow < Gosu::Window
         @lbl_retro.visible = false
         @lbl_score = Label.new self, "SCORE: 0", 30
         @lbl_score.align = :left
+        new_exercise
+        @total_exercises = 20
     end
 
     def new_exercise
         @exercise.generate POSITIONS.sample, PHASES.sample
+        @exertime = Gosu::milliseconds
     end
 
     def solve_exercise(movement)
+        passed = Gosu::milliseconds - @exertime
+        points = 1000.0 / (passed ** 0.5)
         if @exercise.solution? movement
-            @score += 1
-            @lbl_score.text  = "SCORE: " + @score.to_s
-            @lbl_retro.text  = "OK!"
+            @score += points
+            @lbl_retro.text  = "+" + points.truncate.to_s
             @lbl_retro.color = 0xFF00FF00
         else
-            @lbl_retro.text  = "BAD!"
+            @score -= points * 2.0
+            @lbl_retro.text  = "-" + points.truncate.to_s
             @lbl_retro.color = 0xFFFF0000
         end
+        @lbl_score.text  = "SCORE: " + @score.truncate.to_s
         @lbl_retro.visible = true
         @retro_time = Gosu::milliseconds
-        new_exercise
+        @total_exercises -= 1 
+        new_exercise if @total_exercises > 0
     end
 
     def update
@@ -41,6 +48,10 @@ class GameWindow < Gosu::Window
             now = Gosu::milliseconds - @retro_time
             if now > 1023
                 @lbl_retro.visible = false
+                if @total_exercises == 0
+                    p "Puntuacion Final: #{@score}"
+                    self.close
+                end
             elsif now > 512
                 @lbl_retro.color &= 0x00FFFFFF
                 @lbl_retro.color += ((1024 - now) & 0x3FC) << 22
@@ -49,10 +60,12 @@ class GameWindow < Gosu::Window
     end
 
     def button_up(id)
-        case id
-            when Gosu::KbR then solve_exercise :raise
-            when Gosu::KbF then solve_exercise :fold
-            when Gosu::KbC then solve_exercise :call
+        if @total_exercises > 0
+            case id
+                when Gosu::KbR then solve_exercise :raise
+                when Gosu::KbF then solve_exercise :fold
+                when Gosu::KbC then solve_exercise :call
+            end
         end
     end
 

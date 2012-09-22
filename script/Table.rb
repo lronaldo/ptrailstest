@@ -57,6 +57,7 @@ class Table < Widget
         @seats = {}
         (0...nseats).each do |i|
             @seats[i] = TableSeat.new @window, st[i], sx[i], sy[i] 
+            @seats[i].labels[:bet].text = ""
             self.addChild @seats[i]
         end
 =begin
@@ -138,12 +139,45 @@ class Table < Widget
             end
             @dealer = d
             @seats[@dealer].dealer = true
+            self.returnBetsToPlayers
+            self.putBlindsAndAnte
+        end
+    end
+
+    ## Return BETs to players
+    def returnBetsToPlayers
+        @seats.each do |i, k|
+            if k.player
+                @seats[i].returnBetToPlayer
+            end
+        end
+    end
+
+    ## Puts Blinds and Ante in the table
+    def putBlindsAndAnte
+        np = playerseats.size
+        @pot = 0
+        if np > 1 && @dealer
+            bets = [ @bb / 2, @bb ] 
+            (np-2).times { bets << @ante }
+            n = @dealer
+            begin
+                n = n.next
+                n = @seats.first[0] if !@seats[n]
+                
+                if @seats[n].player
+                    b = bets.shift
+                    @seats[n].bet b
+                    @pot += b
+                end
+            end while n != @dealer
         end
     end
 
     ## Shuffle up and deal
     def dealNewHand
         self.passDealer
+        self.putBlindsAndAnte
 
         ## Shuffle an deal
         @deck.reset

@@ -19,8 +19,7 @@ class TableSeat < Widget
 
 
     ## CLASS ATTRIBUTES
-    attr_accessor :seattype, :player, :bet, :dealer
-    attr_reader   :labels
+    attr_accessor :seattype, :player, :bet, :dealer, :labels
     @@imgs = nil
 
     def initialize(window, type, x = 0, y = 0, owner = nil)
@@ -64,6 +63,30 @@ class TableSeat < Widget
         l.color = 0xFFFF0000
         @labels[:bet] = l
         addChild l
+    end
+
+    ## Bet a quantity
+    def bet(b)
+        b = @player.stack if b > @player.stack
+        @bet = b
+        @player.stack -= @bet
+        if @bet > 0
+            @labels[:bet].text = @bet.to_s
+        else
+            @labels[:bet].text = ""
+        end
+    end
+
+    ## Player is returned the BET
+    def returnBetToPlayer
+        @player.stack += @bet
+        self.clearBet
+    end
+
+    ## Clear current bet
+    def clearBet
+        @bet = 0
+        @labels[:bet].text = ""
     end
 
     ## Create players

@@ -10,6 +10,7 @@ class GameWindow < Gosu::Window
         @bg_image  = Gosu::Image.new self, "img/bg.jpg", true
         @exercise  = Exercise.new self
         @score     = 0
+        @cursor    = Gosu::Image.new self, "img/cursor-icon.png", true
         @lbl_retro = Label.new self, "OK!", 100
         @lbl_retro.visible = false
         @lbl_score = Label.new self, "SCORE: 0", 30
@@ -74,6 +75,7 @@ class GameWindow < Gosu::Window
         @exercise.draw 
         @lbl_retro.drawxy 390, 450
         @lbl_score.draw
+        @cursor.draw self.mouse_x, self.mouse_y, 0
     end
 end
 

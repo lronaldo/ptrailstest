@@ -77,7 +77,7 @@ class TableSeat < Widget
         end
     end
 
-    ## Player is returned the BET
+    ## Player is returned the  BET
     def returnBetToPlayer
         @player.stack += @bet
         self.clearBet
